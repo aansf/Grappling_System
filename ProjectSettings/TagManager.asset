@@ -3,12 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Grapple_Point
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground_Check
   - Water
   - UI
   - 'Grapple_Surface '
