@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 6f;
+    public float sprintMultiplier = 1.5f;
     public float jumpForce = 8f;
 
     [Header("Ground Check")]
@@ -17,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private bool isGrounded;
+    private bool isSprinting;
 
     void Start()
     {
@@ -29,9 +31,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z); // reset y before jumping
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
+
+        // Toggle sprint
+        isSprinting = Input.GetKey(KeyCode.LeftShift);
     }
 
     void FixedUpdate()
@@ -40,12 +45,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (input.magnitude >= 0.1f)
         {
-            // Camera-relative direction
             Vector3 camForward = Vector3.Scale(cam.forward, new Vector3(1, 0, 1)).normalized;
             Vector3 camRight = cam.right;
 
             Vector3 moveDir = camForward * input.z + camRight * input.x;
-            Vector3 targetVelocity = moveDir * moveSpeed;
+
+            float finalSpeed = isSprinting ? moveSpeed * sprintMultiplier : moveSpeed;
+            Vector3 targetVelocity = moveDir * finalSpeed;
 
             Vector3 velocity = rb.linearVelocity;
             Vector3 velocityChange = targetVelocity - new Vector3(velocity.x, 0, velocity.z);
